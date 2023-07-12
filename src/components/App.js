@@ -38,6 +38,7 @@ function App() {
 
   // check
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  //user email
   const [email, setEmail] = useState('');
   //token
   function handleToken(setEmail, setIsLoggedIn, navigate) {
@@ -78,13 +79,6 @@ function App() {
       });
   }
 
-  // function onSignOut() {
-  //   setLoggedIn(false);
-  //   setUserEmail('');
-  //   localStorage.removeItem('jwt');
-  //   navigate('/sign-in');
-  // }
-
   //login
   function handleOnLogin({ password, email }) {
     return auth
@@ -101,6 +95,13 @@ function App() {
         console.log(err);
         handleInfoTolltip(false);
       });
+  }
+  //logout
+  function handleLogOut() {
+    setIsLoggedIn(false);
+    setEmail('');
+    localStorage.removeItem('token');
+    navigate('/sign-in', { replace: true });
   }
 
   // Open Edit Profile Popup
@@ -275,7 +276,7 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <>
-        <Header />
+        <Header email={email} isLoggedIn={isLoggedIn} onLogout={handleLogOut} />
         <Routes>
           <Route
             path="/"
