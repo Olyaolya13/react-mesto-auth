@@ -1,6 +1,6 @@
-import PopupWithForm from '../PopupWithForm/PopupWithForm';
+import PopupWithForm from './PopupWithForm';
 import { useEffect, useRef } from 'react';
-import useFormValidation from '../../hooks/useFormValidation/useFormValidation';
+import useFormValidation from '../hooks/useFormValidation';
 
 function EditAvatarPopup({ isPopupOpen, onClose, onUpdateAvatar }) {
   const avatarRef = useRef();
