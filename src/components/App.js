@@ -68,8 +68,6 @@ function App() {
         if (!res || res.error) {
           handleInfoTolltip(false); // Регистрация не удалась
           navigate('/sign-in', { replace: true });
-        } else {
-          handleInfoTolltip(true); // Регистрация успешна
         }
         return res;
       })
@@ -88,8 +86,6 @@ function App() {
           localStorage.setItem('token', res.token);
           setIsLoggedIn(true);
           setEmail(email);
-        } else {
-          handleInfoTolltip(true);
         }
       })
       .catch(err => {
