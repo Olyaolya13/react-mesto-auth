@@ -11,7 +11,7 @@ import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ProtectedRoute from './ProtectedRoute';
 
-import { BrowserRouter, Navigate, Routes, Route, useNavigate } from 'react-router-dom';
+import { Navigate, Routes, Route, useNavigate } from 'react-router-dom';
 import Register from './Register';
 import Login from './Login';
 import InfoTooltip from './InfoTooltip';
@@ -39,7 +39,6 @@ function App() {
   // check
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
-
   //token
   function handleToken(setEmail, setIsLoggedIn, navigate) {
     const token = localStorage.getItem('token');
@@ -66,7 +65,7 @@ function App() {
       .register(password, email)
       .then(res => {
         if (!res || res.error) {
-          handleInfoTolltip(false); // Регистрация не удалась
+          handleInfoTolltip(false);
           navigate('/sign-in', { replace: true });
         } else {
           handleInfoTolltip(true);
@@ -75,9 +74,16 @@ function App() {
       })
       .catch(err => {
         console.error(err);
-        handleInfoTolltip(false); // Обработка ошибки
+        handleInfoTolltip(false);
       });
   }
+
+  // function onSignOut() {
+  //   setLoggedIn(false);
+  //   setUserEmail('');
+  //   localStorage.removeItem('jwt');
+  //   navigate('/sign-in');
+  // }
 
   //login
   function handleOnLogin({ password, email }) {
@@ -271,30 +277,32 @@ function App() {
       <>
         <Header />
         <Routes>
-          <Route path="sign-up" element={<Register onRegister={handleOnRegister} />} />
-          <Route path="sign-in" element={<Login onLogin={handleOnLogin} />} />
-          {isLoggedIn ? (
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute
-                  element={Main}
-                  onEditProfile={handleEditProfileClick}
-                  onAddPlace={handleAddPlaceClick}
-                  onEditAvatar={handleEditAvatarClick}
-                  onCardClick={handleCardClick}
-                  cards={cards}
-                  onCardLike={handleCardLike}
-                  onCardDelete={handleConfirmDelete}
-                  onQuestuon={handleCardDelete}
-                />
-              }
-            />
-          ) : (
-            <Route path="/" element={<Navigate to="/sign-in" replace />} />
-          )}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute
+                element={Main}
+                isLoggedIn={isLoggedIn}
+                onEditProfile={handleEditProfileClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditAvatar={handleEditAvatarClick}
+                onCardClick={handleCardClick}
+                cards={cards}
+                onCardLike={handleCardLike}
+                onCardDelete={handleConfirmDelete}
+                onQuestuon={handleCardDelete}
+              />
+            }
+          />
+          <Route path="/sign-up" element={<Register onRegister={handleOnRegister} />} />
+          <Route path="/sign-in" element={<Login onLogin={handleOnLogin} />} />
+          <Route
+            path="*"
+            element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/sign-in" replace />}
+          />
         </Routes>
         <Footer />
+
         <EditProfilePopup
           isPopupOpen={isEditProfilePopupOpen}
           onClose={handleWindowCloseClick}
