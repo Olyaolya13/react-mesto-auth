@@ -9,6 +9,13 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import ProtectedRoute from './ProtectedRoute';
+import { Routes, Route, useNavigate } from 'react-router';
+import { BrowserRouter, Navigate } from 'react-router-dom';
+import Register from './Register';
+import Login from './Login';
+import InfoTooltip from './InfoTooltip';
+import * as auth from '../utils/auth';
 
 function App() {
   //popup
@@ -22,6 +29,72 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
   //cards
   const [cards, setCards] = useState([]);
+
+  const navigate = useNavigate;
+  // попап успешного входа
+  const [isInfoTolltipSuccess, setIsInfoTolltipSuccess] = useState(false);
+  const [isInfoTolltipOpen, setIsInfoTolltipOpen] = useState(false);
+
+  // Авторизация юзера
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
+
+  //check login
+  function handleLoggedIn() {
+    setIsLoggedIn(true);
+  }
+  //register
+
+  function handleOnRegister({ password, email }) {
+    if (password && email) {
+      auth
+        .register(password, email)
+        .then(() => {
+          console.log('rrr');
+          handleInfoTolltip(true);
+          navigate('/sign-in', { replace: true });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    } else {
+      console.log('Password or email is missing');
+      handleInfoTolltip(false);
+    }
+  }
+
+  //login
+  function handleOnLogin({ password, email }) {
+    auth
+      .login(password, email)
+      .then(() => {
+        console.log('Successful login');
+        handleInfoTolltip(true); // открыть попап успешного входа
+      })
+      .catch(err => {
+        console.log('Login failed:', err);
+      });
+  }
+
+  // function handleOnRegister({ password, email }) {
+  //   auth
+  //     .register(password, email)
+  //     .then(res => {
+  //       if (res) {
+  //         handleInfoTolltip(true);
+  //       }
+  //     })
+  //     .catch(err => {
+  //       handleInfoTolltip(false);
+  //       console.log(err);
+  //     });
+  //   // .finally(() => {
+  //   //   setTimeout(() => {
+  //   //     handleInfoTolltip(false);
+  //   //   }, 100);
+  //   // });
+  // }
+
   // Open Edit Profile Popup
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
@@ -43,6 +116,12 @@ function App() {
   function handleQuestionPopupOpen() {
     setIsQuestionPopupOpen(true);
   }
+  // Open Info Popup
+  function handleInfoTolltip(isSuccess) {
+    setIsInfoTolltipOpen(true);
+    setIsInfoTolltipSuccess(isSuccess);
+  }
+
   // Close all popups
   const closeAllPopups = useCallback(() => {
     setIsEditProfilePopupOpen(false);
@@ -50,6 +129,8 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsZoomPopup(false);
     setIsQuestionPopupOpen(false);
+    setIsInfoTolltipOpen(false);
+    // setIsInfoTolltipSuccess({ isSuccess: false });
   }, []);
   // Close popups when clicking outside the popup
   const handleWindowCloseClick = useCallback(
@@ -148,6 +229,12 @@ function App() {
       });
   }
 
+  //login
+  // function isLoggedIn() {
+  //   const user = localStorage.getItem('user');
+  //   return !!user; // преобразуем значение user в булево и возвращаем его
+  // }
+
   useEffect(() => {
     const handleEscKey = event => {
       if (event.key === 'Escape') {
@@ -159,7 +246,8 @@ function App() {
       isAddPlacePopupOpen ||
       isEditAvatarPopupOpen ||
       isZoomPopup ||
-      isQuestionPopupOpen
+      isQuestionPopupOpen ||
+      isInfoTolltipOpen
     )
       document.addEventListener('keydown', handleEscKey);
     else document.removeEventListener('keydown', handleEscKey);
@@ -173,6 +261,7 @@ function App() {
     isEditAvatarPopupOpen,
     isZoomPopup,
     isQuestionPopupOpen,
+    isInfoTolltipOpen,
     closeAllPopups
   ]);
 
@@ -189,20 +278,37 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <>
-        <Header />
-
-        <Main
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-          cards={cards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleConfirmDelete}
-          onQuestuon={handleCardDelete}
-        />
-
-        <Footer />
+        <BrowserRouter>
+          <Header isLoggedIn={isLoggedIn} />
+          <Routes>
+            <Route path="/sign-up" element={<Register onRegister={handleOnRegister} />} />
+            <Route path="/sign-in" element={<Login onLogin={handleLoggedIn} />} />
+            <Route
+              path="/"
+              element={
+                isLoggedIn ? <Navigate to="/sign-up" replace /> : <Navigate to="/sign-in" replace />
+              }
+            />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute
+                  element={Main}
+                  onEditProfile={handleEditProfileClick}
+                  onAddPlace={handleAddPlaceClick}
+                  onEditAvatar={handleEditAvatarClick}
+                  onCardClick={handleCardClick}
+                  cards={cards}
+                  onCardLike={handleCardLike}
+                  onCardDelete={handleConfirmDelete}
+                  onQuestuon={handleCardDelete}
+                  isLoggedIn={isLoggedIn}
+                />
+              }
+            />
+          </Routes>
+          <ProtectedRoute element={Footer} />
+        </BrowserRouter>
 
         <EditProfilePopup
           isPopupOpen={isEditProfilePopupOpen}
@@ -232,6 +338,11 @@ function App() {
           card={selectedCard}
           isPopupOpen={isZoomPopup}
           onClose={handleWindowCloseClick}
+        />
+        <InfoTooltip
+          onClose={handleWindowCloseClick}
+          isPopupOpen={isInfoTolltipOpen}
+          isSuccess={isInfoTolltipSuccess.isSuccess}
         />
       </>
     </CurrentUserContext.Provider>
