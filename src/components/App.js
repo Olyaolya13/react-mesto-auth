@@ -10,8 +10,8 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ProtectedRoute from './ProtectedRoute';
-import { Routes, Route, useNavigate } from 'react-router';
-import { BrowserRouter, Navigate } from 'react-router-dom';
+
+import { BrowserRouter, Navigate, Routes, Route, useNavigate } from 'react-router-dom';
 import Register from './Register';
 import Login from './Login';
 import InfoTooltip from './InfoTooltip';
@@ -30,7 +30,7 @@ function App() {
   //cards
   const [cards, setCards] = useState([]);
 
-  const navigate = useNavigate;
+  const navigate = useNavigate();
 
   // попап успешного входа
   const [isInfoTolltipSuccess, setIsInfoTolltipSuccess] = useState(false);
@@ -58,7 +58,7 @@ function App() {
 
   // Использование внутри компонента или обработчика события
   useEffect(() => {
-    handleToken(setEmail, setIsLoggedIn, navigate);
+    handleToken();
   }, []);
 
   function handleOnRegister({ password, email }) {
@@ -88,7 +88,7 @@ function App() {
           localStorage.setItem('token', res.token);
           setIsLoggedIn(true);
           setEmail(email);
-          navigate('/');
+          navigate('/', { replace: true });
         }
       })
       .catch(err => {
@@ -143,12 +143,6 @@ function App() {
     },
     [closeAllPopups]
   );
-  // Close popups when pressing the Escape key
-  function handleEscKey(event) {
-    if (event.key === 'Escape') {
-      closeAllPopups();
-    }
-  }
 
   // Update user information
   function handleUpdateUser(userInfo) {
@@ -261,34 +255,25 @@ function App() {
     closeAllPopups
   ]);
 
-  useEffect(
-    isLoggedIn => {
-      Promise.all([api.getUserInfo(), api.getInitialCards()])
-        .then(([userInfo, initialCards]) => {
-          setCurrentUser(userInfo);
-          setCards(initialCards);
-        })
-        .catch(err => {
-          console.log('Ошибка при получении информации:', err);
-        });
-    },
-    [isLoggedIn]
-  );
+  useEffect(() => {
+    Promise.all([api.getUserInfo(), api.getInitialCards()])
+      .then(([userInfo, initialCards]) => {
+        setCurrentUser(userInfo);
+        setCards(initialCards);
+      })
+      .catch(err => {
+        console.log('Ошибка при получении информации:', err);
+      });
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <>
-        <BrowserRouter>
-          <Header />
-          <Routes>
-            <Route path="sign-up" element={<Register onRegister={handleOnRegister} />} />
-            <Route path="sign-in" element={<Login onLogin={handleOnLogin} />} />
-            <Route
-              path="/"
-              element={
-                isLoggedIn ? <Navigate to="/sign-up" replace /> : <Navigate to="/sign-in" replace />
-              }
-            />
+        <Header />
+        <Routes>
+          <Route path="sign-up" element={<Register onRegister={handleOnRegister} />} />
+          <Route path="sign-in" element={<Login onLogin={handleOnLogin} />} />
+          {isLoggedIn ? (
             <Route
               path="/"
               element={
@@ -302,14 +287,14 @@ function App() {
                   onCardLike={handleCardLike}
                   onCardDelete={handleConfirmDelete}
                   onQuestuon={handleCardDelete}
-                  isLoggedIn={isLoggedIn}
                 />
               }
             />
-          </Routes>
-          <ProtectedRoute element={Footer} />
-        </BrowserRouter>
-
+          ) : (
+            <Route path="/" element={<Navigate to="/sign-in" replace />} />
+          )}
+        </Routes>
+        <Footer />
         <EditProfilePopup
           isPopupOpen={isEditProfilePopupOpen}
           onClose={handleWindowCloseClick}
