@@ -3,3 +3,9 @@
   flex-direction: column;
   width: 358px;
 }
+
+@media (max-width: 420px) {
+  .register__form {
+    width: 280px;
+  }
+}

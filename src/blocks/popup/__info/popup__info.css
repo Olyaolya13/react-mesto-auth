@@ -5,3 +5,10 @@
   align-items: center;
   width: 430px;
 }
+
+@media (max-width: 570px) {
+  .popup__info {
+    width: 280px;
+    padding-right: 15px;
+  }
+}

@@ -28,9 +28,11 @@ function Header({ email, onLogout }) {
           </Link>
         </div>
       ) : (
-        <Link className="register__subtitle register__login-link" to={linkPath}>
-          {linkText}
-        </Link>
+        <div className="register__click">
+          <Link className="register__subtitle register__login-link" to={linkPath}>
+            {linkText}
+          </Link>
+        </div>
       )}
     </header>
   );

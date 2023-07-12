@@ -7,3 +7,10 @@
   text-align: center;
   margin: 32px auto 60px;
 }
+
+@media (max-width: 570px) {
+  .popup__info-text {
+    font-size: 20px;
+    margin: 40px 0;
+  }
+}
