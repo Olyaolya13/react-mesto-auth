@@ -40,26 +40,26 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
 
-  // //token
-  // function handleToken() {
-  //   const token = localStorage.getItem('token');
-  //   if (token) {
-  //     auth
-  //       .getContent(token)
-  //       .then(res => {
-  //         setEmail(res.data.email);
-  //         setIsLoggedIn(true);
-  //         navigate('/');
-  //       })
-  //       .catch(error => {
-  //         console.log(error);
-  //       });
-  //   }
-  // }
+  //token
+  function handleToken(setEmail, setIsLoggedIn, navigate) {
+    const token = localStorage.getItem('token');
+    return auth
+      .getContent(token)
+      .then(res => {
+        if (token) {
+          setEmail(res.email);
+          setIsLoggedIn(true);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
 
-  // useEffect(() => {
-  //   handleToken();
-  // }, []);
+  // Использование внутри компонента или обработчика события
+  useEffect(() => {
+    handleToken(setEmail, setIsLoggedIn, navigate);
+  }, []);
 
   function handleOnRegister({ password, email }) {
     return auth
@@ -84,12 +84,12 @@ function App() {
     return auth
       .login(password, email)
       .then(res => {
-        if (password && email) {
-          setEmail(email);
-          setIsLoggedIn(true);
-          handleInfoTolltip(true);
+        if (res.token) {
           localStorage.setItem('token', res.token);
-          navigate('/', { replace: true });
+          setIsLoggedIn(true);
+          setEmail(email);
+        } else {
+          handleInfoTolltip(true);
         }
       })
       .catch(err => {
@@ -282,8 +282,8 @@ function App() {
         <BrowserRouter>
           <Header />
           <Routes>
-            <Route path="/sign-up" element={<Register onRegister={handleOnRegister} />} />
-            <Route path="/sign-in" element={<Login onLogin={handleOnLogin} />} />
+            <Route path="sign-up" element={<Register onRegister={handleOnRegister} />} />
+            <Route path="sign-in" element={<Login onLogin={handleOnLogin} />} />
             <Route
               path="/"
               element={
