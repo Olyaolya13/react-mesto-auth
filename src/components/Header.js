@@ -21,12 +21,12 @@ function Header({ email, onLogout }) {
     <header className="header">
       <img className="header__logo" alt="логотип Место" src={logo} />
       {email ? (
-        <>
-          <p>{email}</p>
-          <Link className="register__subtitle register__login-link" onClick={onLogout}>
+        <div className="register__user">
+          <p className="register__subtitle">{email}</p>
+          <Link className="register__subtitle  register__login-link" onClick={onLogout}>
             Выйти
           </Link>
-        </>
+        </div>
       ) : (
         <Link className="register__subtitle register__login-link" to={linkPath}>
           {linkText}
