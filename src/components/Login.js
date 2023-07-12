@@ -9,7 +9,7 @@ function Login({ onLogin }) {
     if (!password || !email) {
       return;
     }
-    onLogin(password, email);
+    onLogin({ password, email });
   }
 
   function handleChangePassword(event) {

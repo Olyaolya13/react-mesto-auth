@@ -31,46 +31,66 @@ function App() {
   const [cards, setCards] = useState([]);
 
   const navigate = useNavigate;
+
   // попап успешного входа
   const [isInfoTolltipSuccess, setIsInfoTolltipSuccess] = useState(false);
   const [isInfoTolltipOpen, setIsInfoTolltipOpen] = useState(false);
 
-  // Авторизация юзера
+  // check
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
 
-  //check login
-  function handleLoggedIn() {}
-  //register
+  //token
+  function handleToken() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      auth
+        .getContent(token)
+        .then(res => {
+          setEmail(res.data.email);
+          setIsLoggedIn(true);
+          navigate('/');
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }
+
+  useEffect(() => {
+    handleToken();
+  }, []);
 
   function handleOnRegister({ password, email }) {
-    if (password && email) {
-      auth
-        .register(password, email)
-        .then(() => {
-          console.log('rrr');
+    return auth
+      .register(password, email)
+      .then(res => {
+        if (password && email) {
+          handleInfoTolltip(false);
+        } else {
           handleInfoTolltip(true);
           navigate('/sign-in', { replace: true });
-        })
-        .catch(err => {
-          console.log(err);
-          handleInfoTolltip(false);
-        });
-    } else {
-      console.log('Password or email is missing');
-      handleInfoTolltip(false);
-    }
+        }
+        return res;
+      })
+      .catch(err => console.error(err))
+      .finally(() => {
+        handleInfoTolltip(true);
+      });
   }
 
   //login
   function handleOnLogin({ password, email }) {
-    auth
+    return auth
       .login(password, email)
-      .then(() => {
-        setEmail(email);
-        setIsLoggedIn(true);
-        handleInfoTolltip(true);
-        navigate('/', { replace: true });
+      .then(res => {
+        if (password && email) {
+          setEmail(email);
+          setIsLoggedIn(true);
+          handleInfoTolltip(true);
+          localStorage.setItem('token', res.token);
+          navigate('/', { replace: true });
+        }
       })
       .catch(err => {
         console.log(err);
@@ -212,12 +232,6 @@ function App() {
       });
   }
 
-  //login
-  // function isLoggedIn() {
-  //   const user = localStorage.getItem('user');
-  //   return !!user; // преобразуем значение user в булево и возвращаем его
-  // }
-
   useEffect(() => {
     const handleEscKey = event => {
       if (event.key === 'Escape') {
@@ -266,7 +280,7 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
       <>
         <BrowserRouter>
-          <Header isLoggedIn={isLoggedIn} />
+          <Header />
           <Routes>
             <Route path="/sign-up" element={<Register onRegister={handleOnRegister} />} />
             <Route path="/sign-in" element={<Login onLogin={handleOnLogin} />} />
