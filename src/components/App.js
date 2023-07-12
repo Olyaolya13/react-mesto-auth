@@ -40,42 +40,42 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
 
-  //token
-  function handleToken() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      auth
-        .getContent(token)
-        .then(res => {
-          setEmail(res.data.email);
-          setIsLoggedIn(true);
-          navigate('/');
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-  }
+  // //token
+  // function handleToken() {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     auth
+  //       .getContent(token)
+  //       .then(res => {
+  //         setEmail(res.data.email);
+  //         setIsLoggedIn(true);
+  //         navigate('/');
+  //       })
+  //       .catch(error => {
+  //         console.log(error);
+  //       });
+  //   }
+  // }
 
-  useEffect(() => {
-    handleToken();
-  }, []);
+  // useEffect(() => {
+  //   handleToken();
+  // }, []);
 
   function handleOnRegister({ password, email }) {
     return auth
       .register(password, email)
       .then(res => {
-        if (password && email) {
-          handleInfoTolltip(false);
-        } else {
-          handleInfoTolltip(true);
+        if (!res || res.error) {
+          handleInfoTolltip(false); // Регистрация не удалась
           navigate('/sign-in', { replace: true });
+        } else {
+          handleInfoTolltip(true); // Регистрация успешна
         }
         return res;
       })
-      .catch(err => console.error(err))
-      .finally(() => {
-        handleInfoTolltip(true);
+      .catch(err => {
+        console.error(err);
+        handleInfoTolltip(false); // Обработка ошибки
       });
   }
 
@@ -133,7 +133,7 @@ function App() {
     setIsZoomPopup(false);
     setIsQuestionPopupOpen(false);
     setIsInfoTolltipOpen(false);
-    // setIsInfoTolltipSuccess({ isSuccess: false });
+    setIsInfoTolltipSuccess(false);
   }, []);
   // Close popups when clicking outside the popup
   const handleWindowCloseClick = useCallback(
@@ -343,7 +343,7 @@ function App() {
         <InfoTooltip
           onClose={handleWindowCloseClick}
           isPopupOpen={isInfoTolltipOpen}
-          isSuccess={isInfoTolltipSuccess.isSuccess}
+          isSuccess={isInfoTolltipSuccess}
         />
       </>
     </CurrentUserContext.Provider>
