@@ -297,12 +297,13 @@ function App() {
           />
           <Route path="/sign-up" element={<Register onRegister={handleOnRegister} />} />
           <Route path="/sign-in" element={<Login onLogin={handleOnLogin} />} />
+
           <Route
             path="*"
             element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/sign-in" replace />}
           />
         </Routes>
-        <Footer />
+        {isLoggedIn && <Footer />}
 
         <EditProfilePopup
           isPopupOpen={isEditProfilePopupOpen}
