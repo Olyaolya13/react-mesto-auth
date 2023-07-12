@@ -6,8 +6,7 @@ function Login({ onLogin }) {
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    if (!email || !password) {
-      console.log('');
+    if (!password || !email) {
       return;
     }
     onLogin(password, email);

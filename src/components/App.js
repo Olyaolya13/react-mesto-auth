@@ -40,9 +40,7 @@ function App() {
   const [email, setEmail] = useState('');
 
   //check login
-  function handleLoggedIn() {
-    setIsLoggedIn(true);
-  }
+  function handleLoggedIn() {}
   //register
 
   function handleOnRegister({ password, email }) {
@@ -56,6 +54,7 @@ function App() {
         })
         .catch(err => {
           console.log(err);
+          handleInfoTolltip(false);
         });
     } else {
       console.log('Password or email is missing');
@@ -68,32 +67,16 @@ function App() {
     auth
       .login(password, email)
       .then(() => {
-        console.log('Successful login');
-        handleInfoTolltip(true); // открыть попап успешного входа
+        setEmail(email);
+        setIsLoggedIn(true);
+        handleInfoTolltip(true);
+        navigate('/', { replace: true });
       })
       .catch(err => {
-        console.log('Login failed:', err);
+        console.log(err);
+        handleInfoTolltip(false);
       });
   }
-
-  // function handleOnRegister({ password, email }) {
-  //   auth
-  //     .register(password, email)
-  //     .then(res => {
-  //       if (res) {
-  //         handleInfoTolltip(true);
-  //       }
-  //     })
-  //     .catch(err => {
-  //       handleInfoTolltip(false);
-  //       console.log(err);
-  //     });
-  //   // .finally(() => {
-  //   //   setTimeout(() => {
-  //   //     handleInfoTolltip(false);
-  //   //   }, 100);
-  //   // });
-  // }
 
   // Open Edit Profile Popup
   function handleEditProfileClick() {
@@ -265,16 +248,20 @@ function App() {
     closeAllPopups
   ]);
 
-  useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userInfo, initialCards]) => {
-        setCurrentUser(userInfo);
-        setCards(initialCards);
-      })
-      .catch(err => {
-        console.log('Ошибка при получении информации:', err);
-      });
-  }, []);
+  useEffect(
+    isLoggedIn => {
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([userInfo, initialCards]) => {
+          setCurrentUser(userInfo);
+          setCards(initialCards);
+        })
+        .catch(err => {
+          console.log('Ошибка при получении информации:', err);
+        });
+    },
+    [isLoggedIn]
+  );
+
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <>
@@ -282,7 +269,7 @@ function App() {
           <Header isLoggedIn={isLoggedIn} />
           <Routes>
             <Route path="/sign-up" element={<Register onRegister={handleOnRegister} />} />
-            <Route path="/sign-in" element={<Login onLogin={handleLoggedIn} />} />
+            <Route path="/sign-in" element={<Login onLogin={handleOnLogin} />} />
             <Route
               path="/"
               element={
