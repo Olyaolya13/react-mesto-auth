@@ -66,9 +66,9 @@ function App() {
       .then(res => {
         if (!res || res.error) {
           handleInfoTolltip(false);
-          navigate('/sign-in', { replace: true });
         } else {
           handleInfoTolltip(true);
+          navigate('/sign-in', { replace: true });
         }
         return res;
       })
