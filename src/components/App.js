@@ -25,8 +25,8 @@ function App() {
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState([]);
-  const [isZoomPopup, setIsZoomPopup] = useState(false);
-  const [isQuestionPopupOpen, setIsQuestionPopupOpen] = useState(false);
+  const [isZoomPopupOpen, setIsZoomPopupOpen] = useState(false);
+  // const [isQuestionPopupOpen, setIsQuestionPopupOpen] = useState(false);
   //context
   const [currentUser, setCurrentUser] = useState({});
   //cards
@@ -35,8 +35,8 @@ function App() {
   const navigate = useNavigate();
 
   // попап успешного входа
-  const [isInfoTolltipSuccess, setIsInfoTolltipSuccess] = useState(false);
-  const [isInfoTolltipOpen, setIsInfoTolltipOpen] = useState(false);
+  const [isInfoTooltipSuccess, setIsInfoTooltipSuccess] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
 
   // check
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -68,16 +68,16 @@ function App() {
       .register(password, email)
       .then(res => {
         if (!res || res.error) {
-          handleInfoTolltip(false);
+          handleInfoTooltip(false);
         } else {
-          handleInfoTolltip(true);
+          handleInfoTooltip(true);
           navigate('/sign-in', { replace: true });
         }
         return res;
       })
       .catch(err => {
         console.error(err);
-        handleInfoTolltip(false);
+        handleInfoTooltip(false);
       });
   }
 
@@ -95,7 +95,7 @@ function App() {
       })
       .catch(err => {
         console.log(err);
-        handleInfoTolltip(false);
+        handleInfoTooltip(false);
       });
   }
   //logout
@@ -121,16 +121,16 @@ function App() {
   // Open Zoom Popup with selected card
   function handleCardClick(card) {
     setSelectedCard(card);
-    setIsZoomPopup(true);
+    setIsZoomPopupOpen(true);
   }
-  // Open Question Popup
-  function handleQuestionPopupOpen() {
-    setIsQuestionPopupOpen(true);
-  }
+  // // Open Question Popup
+  // function handleQuestionPopupOpen() {
+  //   setIsQuestionPopupOpen(true);
+  // }
   // Open Info Popup
-  function handleInfoTolltip(isSuccess) {
-    setIsInfoTolltipOpen(true);
-    setIsInfoTolltipSuccess(isSuccess);
+  function handleInfoTooltip(isSuccess) {
+    setIsInfoTooltipOpen(true);
+    setIsInfoTooltipSuccess(isSuccess);
   }
 
   // Close all popups
@@ -138,10 +138,10 @@ function App() {
     setIsEditProfilePopupOpen(false);
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
-    setIsZoomPopup(false);
-    setIsQuestionPopupOpen(false);
-    setIsInfoTolltipOpen(false);
-    setIsInfoTolltipSuccess(false);
+    setIsZoomPopupOpen(false);
+    // setIsQuestionPopupOpen(false);
+    setIsInfoTooltipOpen(false);
+    setIsInfoTooltipSuccess(false);
   }, []);
   // Close popups when clicking outside the popup
   const handleWindowCloseClick = useCallback(
@@ -218,10 +218,10 @@ function App() {
     }
   }
 
-  //delete card
-  function handleCardDelete() {
-    handleQuestionPopupOpen();
-  }
+  // //delete card
+  // function handleCardDelete() {
+  //   handleQuestionPopupOpen();
+  // }
 
   function handleConfirmDelete(card) {
     api
@@ -244,12 +244,11 @@ function App() {
       isEditProfilePopupOpen ||
       isAddPlacePopupOpen ||
       isEditAvatarPopupOpen ||
-      isZoomPopup ||
-      isQuestionPopupOpen ||
-      isInfoTolltipOpen
+      isZoomPopupOpen ||
+      // isQuestionPopupOpen ||
+      isInfoTooltipOpen
     )
       document.addEventListener('keydown', handleEscKey);
-    else document.removeEventListener('keydown', handleEscKey);
 
     return () => {
       document.removeEventListener('keydown', handleEscKey);
@@ -258,9 +257,9 @@ function App() {
     isEditProfilePopupOpen,
     isAddPlacePopupOpen,
     isEditAvatarPopupOpen,
-    isZoomPopup,
-    isQuestionPopupOpen,
-    isInfoTolltipOpen,
+    isZoomPopupOpen,
+    // isQuestionPopupOpen,
+    isInfoTooltipOpen,
     closeAllPopups
   ]);
 
@@ -277,76 +276,74 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <>
-        <Header email={email} isLoggedIn={isLoggedIn} onLogout={handleLogOut} />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute
-                element={Main}
-                isLoggedIn={isLoggedIn}
-                onEditProfile={handleEditProfileClick}
-                onAddPlace={handleAddPlaceClick}
-                onEditAvatar={handleEditAvatarClick}
-                onCardClick={handleCardClick}
-                cards={cards}
-                onCardLike={handleCardLike}
-                onCardDelete={handleConfirmDelete}
-                onQuestuon={handleCardDelete}
-              />
-            }
-          />
-          <Route path="/sign-up" element={<Register onRegister={handleOnRegister} />} />
-          <Route path="/sign-in" element={<Login onLogin={handleOnLogin} />} />
-
-          <Route
-            path="*"
-            element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/sign-in" replace />}
-          />
-        </Routes>
-        {isLoggedIn && <Footer />}
-
-        <EditProfilePopup
-          isPopupOpen={isEditProfilePopupOpen}
-          onClose={handleWindowCloseClick}
-          onUpdateUser={handleUpdateUser}
-        />
-
-        <EditAvatarPopup
-          isPopupOpen={isEditAvatarPopupOpen}
-          onClose={handleWindowCloseClick}
-          onUpdateAvatar={handleUpdateAvatar}
-        />
-
-        <AddPlacePopup
-          isPopupOpen={isAddPlacePopupOpen}
-          onClose={handleWindowCloseClick}
-          onAddPlace={handleAddPlace}
-        />
-        <PopupWithForm
-          name="question-popup"
-          title="Вы уверены"
-          button="Да"
-          onClose={handleWindowCloseClick}
-        />
-
-        <ImagePopup
-          card={selectedCard}
-          isPopupOpen={isZoomPopup}
-          onClose={handleWindowCloseClick}
-        />
-        <InfoTooltip
-          onClose={handleWindowCloseClick}
-          isPopupOpen={isInfoTolltipOpen}
-          text={
-            isInfoTolltipSuccess
-              ? 'Вы успешно зарегистрировались!'
-              : 'Что-то пошло не так! Попробуйте ещё раз.'
+      <Header email={email} isLoggedIn={isLoggedIn} onLogout={handleLogOut} />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute
+              element={Main}
+              isLoggedIn={isLoggedIn}
+              onEditProfile={handleEditProfileClick}
+              onAddPlace={handleAddPlaceClick}
+              onEditAvatar={handleEditAvatarClick}
+              onCardClick={handleCardClick}
+              cards={cards}
+              onCardLike={handleCardLike}
+              onCardDelete={handleConfirmDelete}
+              // onQuestuon={handleCardDelete}
+            />
           }
-          image={isInfoTolltipSuccess ? success : unsuccess}
         />
-      </>
+        <Route path="/sign-up" element={<Register onRegister={handleOnRegister} />} />
+        <Route path="/sign-in" element={<Login onLogin={handleOnLogin} />} />
+
+        <Route
+          path="*"
+          element={isLoggedIn ? <Navigate to="/" replace /> : <Navigate to="/sign-in" replace />}
+        />
+      </Routes>
+      {isLoggedIn && <Footer />}
+
+      <EditProfilePopup
+        isPopupOpen={isEditProfilePopupOpen}
+        onClose={handleWindowCloseClick}
+        onUpdateUser={handleUpdateUser}
+      />
+
+      <EditAvatarPopup
+        isPopupOpen={isEditAvatarPopupOpen}
+        onClose={handleWindowCloseClick}
+        onUpdateAvatar={handleUpdateAvatar}
+      />
+
+      <AddPlacePopup
+        isPopupOpen={isAddPlacePopupOpen}
+        onClose={handleWindowCloseClick}
+        onAddPlace={handleAddPlace}
+      />
+      <PopupWithForm
+        name="question-popup"
+        title="Вы уверены"
+        button="Да"
+        onClose={handleWindowCloseClick}
+      />
+
+      <ImagePopup
+        card={selectedCard}
+        isPopupOpen={isZoomPopupOpen}
+        onClose={handleWindowCloseClick}
+      />
+      <InfoTooltip
+        onClose={handleWindowCloseClick}
+        isPopupOpen={isInfoTooltipOpen}
+        text={
+          isInfoTooltipSuccess
+            ? 'Вы успешно зарегистрировались!'
+            : 'Что-то пошло не так! Попробуйте ещё раз.'
+        }
+        image={isInfoTooltipSuccess ? success : unsuccess}
+      />
     </CurrentUserContext.Provider>
   );
 }
