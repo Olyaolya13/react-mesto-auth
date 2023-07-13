@@ -40,19 +40,21 @@ function App() {
   //user email
   const [email, setEmail] = useState('');
   //token
-  function handleToken(setEmail, setIsLoggedIn, navigate) {
+  function handleToken() {
     const token = localStorage.getItem('token');
-    return auth
-      .checkToken(token)
-      .then(res => {
-        if (token) {
+    if (token) {
+      return auth
+        .checkToken(token)
+        .then(res => {
           setEmail(res.email);
           setIsLoggedIn(true);
-        }
-      })
-      .catch(error => {
-        console.log(error);
-      });
+          navigate('/', { replace: true });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+    return Promise.resolve();
   }
 
   useEffect(() => {
