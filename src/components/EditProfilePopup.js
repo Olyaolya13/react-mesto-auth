@@ -4,24 +4,18 @@ import CurrentUserContext from '../contexts/CurrentUserContext';
 import useFormValidation from '../hooks/useFormValidation';
 
 function EditProfilePopup({ isPopupOpen, onClose, onUpdateUser }) {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
   const currentUser = useContext(CurrentUserContext);
 
-  const { error, isValid, isInputValid, handleChange, resetValidation } = useFormValidation();
+  const { error, value, isValid, isInputValid, handleChange, resetValidation } =
+    useFormValidation();
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    onUpdateUser({
-      name,
-      about: description
-    });
+    onUpdateUser(value);
   };
 
   useEffect(() => {
     if (!isPopupOpen) {
-      setName(currentUser.name);
-      setDescription(currentUser.about);
       resetValidation();
     }
   }, [isPopupOpen, currentUser, resetValidation]);
@@ -46,11 +40,8 @@ function EditProfilePopup({ isPopupOpen, onClose, onUpdateUser }) {
         id="user-name"
         minLength={2}
         maxLength={40}
-        value={name || ''}
-        onChange={evt => {
-          handleChange(evt);
-          setName(evt.target.value);
-        }}
+        value={value.name || ''}
+        onChange={handleChange}
         required
       />
 
@@ -66,11 +57,8 @@ function EditProfilePopup({ isPopupOpen, onClose, onUpdateUser }) {
         id="user-occupation"
         minLength={2}
         maxLength={200}
-        value={description || ''}
-        onChange={evt => {
-          handleChange(evt);
-          setDescription(evt.target.value);
-        }}
+        value={value.about || ''}
+        onChange={handleChange}
         required
       />
       <span className="popup__input-error user-occupation-error">{error.about}</span>
