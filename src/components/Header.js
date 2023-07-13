@@ -62,7 +62,7 @@ function Header({ email, onLogout }) {
           </label>
           <ul className={`header__menu header__menu__box${isMenuOpen ? 'header__menu_open' : ''} `}>
             <li className="header__menu-item">
-              <p className="register__subtitle">{email}</p>
+              <p className="register__subtitle-email">{email}</p>
             </li>
             <li className="header__menu-item register__click">
               <Link

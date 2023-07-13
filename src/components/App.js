@@ -10,6 +10,8 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ProtectedRoute from './ProtectedRoute';
+import success from '../images/logo/Union.svg';
+import unsuccess from '../images/logo/Unsuccess.svg';
 
 import { Navigate, Routes, Route, useNavigate } from 'react-router-dom';
 import Register from './Register';
@@ -337,7 +339,12 @@ function App() {
         <InfoTooltip
           onClose={handleWindowCloseClick}
           isPopupOpen={isInfoTolltipOpen}
-          isSuccess={isInfoTolltipSuccess}
+          text={
+            isInfoTolltipSuccess
+              ? 'Вы успешно зарегистрировались!'
+              : 'Что-то пошло не так! Попробуйте ещё раз.'
+          }
+          image={isInfoTolltipSuccess ? success : unsuccess}
         />
       </>
     </CurrentUserContext.Provider>
