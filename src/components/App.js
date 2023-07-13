@@ -10,6 +10,7 @@ import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
 import ProtectedRoute from './ProtectedRoute';
+import Popup from './PopupCloseEsc';
 import success from '../images/logo/Union.svg';
 import unsuccess from '../images/logo/Unsuccess.svg';
 
@@ -235,44 +236,17 @@ function App() {
   }
 
   useEffect(() => {
-    const handleEscKey = event => {
-      if (event.key === 'Escape') {
-        closeAllPopups();
-      }
-    };
-    if (
-      isEditProfilePopupOpen ||
-      isAddPlacePopupOpen ||
-      isEditAvatarPopupOpen ||
-      isZoomPopupOpen ||
-      // isQuestionPopupOpen ||
-      isInfoTooltipOpen
-    )
-      document.addEventListener('keydown', handleEscKey);
-
-    return () => {
-      document.removeEventListener('keydown', handleEscKey);
-    };
-  }, [
-    isEditProfilePopupOpen,
-    isAddPlacePopupOpen,
-    isEditAvatarPopupOpen,
-    isZoomPopupOpen,
-    // isQuestionPopupOpen,
-    isInfoTooltipOpen,
-    closeAllPopups
-  ]);
-
-  useEffect(() => {
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userInfo, initialCards]) => {
-        setCurrentUser(userInfo);
-        setCards(initialCards);
-      })
-      .catch(err => {
-        console.log('Ошибка при получении информации:', err);
-      });
-  }, []);
+    if (isLoggedIn) {
+      Promise.all([api.getUserInfo(), api.getInitialCards()])
+        .then(([userInfo, initialCards]) => {
+          setCurrentUser(userInfo);
+          setCards(initialCards);
+        })
+        .catch(err => {
+          console.log('Ошибка при получении информации:', err);
+        });
+    }
+  }, [isLoggedIn]);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -305,45 +279,47 @@ function App() {
       </Routes>
       {isLoggedIn && <Footer />}
 
-      <EditProfilePopup
-        isPopupOpen={isEditProfilePopupOpen}
-        onClose={handleWindowCloseClick}
-        onUpdateUser={handleUpdateUser}
-      />
+      <Popup onClose={closeAllPopups}>
+        <EditProfilePopup
+          isPopupOpen={isEditProfilePopupOpen}
+          onClose={handleWindowCloseClick}
+          onUpdateUser={handleUpdateUser}
+        />
 
-      <EditAvatarPopup
-        isPopupOpen={isEditAvatarPopupOpen}
-        onClose={handleWindowCloseClick}
-        onUpdateAvatar={handleUpdateAvatar}
-      />
+        <EditAvatarPopup
+          isPopupOpen={isEditAvatarPopupOpen}
+          onClose={handleWindowCloseClick}
+          onUpdateAvatar={handleUpdateAvatar}
+        />
 
-      <AddPlacePopup
-        isPopupOpen={isAddPlacePopupOpen}
-        onClose={handleWindowCloseClick}
-        onAddPlace={handleAddPlace}
-      />
-      <PopupWithForm
-        name="question-popup"
-        title="Вы уверены"
-        button="Да"
-        onClose={handleWindowCloseClick}
-      />
+        <AddPlacePopup
+          isPopupOpen={isAddPlacePopupOpen}
+          onClose={handleWindowCloseClick}
+          onAddPlace={handleAddPlace}
+        />
+        <PopupWithForm
+          name="question-popup"
+          title="Вы уверены"
+          button="Да"
+          onClose={handleWindowCloseClick}
+        />
 
-      <ImagePopup
-        card={selectedCard}
-        isPopupOpen={isZoomPopupOpen}
-        onClose={handleWindowCloseClick}
-      />
-      <InfoTooltip
-        onClose={handleWindowCloseClick}
-        isPopupOpen={isInfoTooltipOpen}
-        text={
-          isInfoTooltipSuccess
-            ? 'Вы успешно зарегистрировались!'
-            : 'Что-то пошло не так! Попробуйте ещё раз.'
-        }
-        image={isInfoTooltipSuccess ? success : unsuccess}
-      />
+        <ImagePopup
+          card={selectedCard}
+          isPopupOpen={isZoomPopupOpen}
+          onClose={handleWindowCloseClick}
+        />
+        <InfoTooltip
+          onClose={handleWindowCloseClick}
+          isPopupOpen={isInfoTooltipOpen}
+          text={
+            isInfoTooltipSuccess
+              ? 'Вы успешно зарегистрировались!'
+              : 'Что-то пошло не так! Попробуйте ещё раз.'
+          }
+          image={isInfoTooltipSuccess ? success : unsuccess}
+        />
+      </Popup>
     </CurrentUserContext.Provider>
   );
 }
