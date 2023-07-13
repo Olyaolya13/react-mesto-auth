@@ -117,3 +117,8 @@
     margin: 40px 0 40px;
   }
 }
+
+.header--menu-open {
+  display: flex !important;
+  flex-direction: column;
+}

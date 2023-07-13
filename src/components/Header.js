@@ -14,7 +14,7 @@ function Header({ email, onLogout }) {
   };
 
   const handleLogout = () => {
-    setIsLogoVisible(true);
+    setIsLogoVisible(false);
     onLogout();
   };
 
@@ -37,10 +37,11 @@ function Header({ email, onLogout }) {
   }, [isMenuOpen, email]);
 
   return (
-    <header className="header">
+    <header className={`header ${isMenuOpen ? 'header--menu-open' : ''}`}>
       {isLogoVisible && (
         <img
-          className={`header__logo ${isMenuOpen ? 'header__logo_hidden' : ''} :''`}
+          className={`header__logo ${isMenuOpen ? 'header__logo_hidden' : ''}
+          } `}
           alt="логотип Место"
           src={logo}
         />
@@ -81,7 +82,7 @@ function Header({ email, onLogout }) {
         </div>
       )}
       {isMenuOpen && !isLogoVisible && (
-        <div className="header__logo_bottom">
+        <div className="header__flex header__logo_bottom">
           <img className="header__logo" alt="логотип Место" src={logo} />
         </div>
       )}
