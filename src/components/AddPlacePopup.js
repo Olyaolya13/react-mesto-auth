@@ -3,23 +3,16 @@ import PopupWithForm from './PopupWithForm';
 import useFormValidation from '../hooks/useFormValidation';
 
 function AddPlacePopup({ isPopupOpen, onClose, onAddPlace }) {
-  const [name, setName] = useState('');
-  const [link, setLink] = useState('');
-
-  const { error, isValid, isInputValid, handleChange, resetValidation } = useFormValidation();
+  const { value, error, isValid, isInputValid, handleChange, resetValidation } =
+    useFormValidation();
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    onAddPlace({
-      name: name,
-      link: link
-    });
+    onAddPlace(value);
   };
 
   useEffect(() => {
     if (!isPopupOpen) {
-      setName('');
-      setLink('');
       resetValidation();
     }
   }, [isPopupOpen, resetValidation]);
@@ -44,11 +37,8 @@ function AddPlacePopup({ isPopupOpen, onClose, onAddPlace }) {
         id="card-name"
         minLength={2}
         maxLength={30}
-        value={name || ''}
-        onChange={evt => {
-          handleChange(evt);
-          setName(evt.target.value);
-        }}
+        value={value.name || ''}
+        onChange={handleChange}
         required
       />
 
@@ -62,11 +52,8 @@ function AddPlacePopup({ isPopupOpen, onClose, onAddPlace }) {
           isInputValid.link === undefined || isInputValid.link ? '' : 'popup__input-error_type_'
         }`}
         id="card-link"
-        value={link || ''}
-        onChange={evt => {
-          handleChange(evt);
-          setLink(evt.target.value);
-        }}
+        value={value.link || ''}
+        onChange={handleChange}
         required
       />
 
