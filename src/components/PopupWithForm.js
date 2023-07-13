@@ -17,7 +17,11 @@ function PopupWithForm({
     setIsSaving(true);
     onSubmit(evt);
   };
-
+  const handleWindowCloseClick = evt => {
+    if (evt.target === evt.currentTarget) {
+      onClose();
+    }
+  };
   useEffect(() => {
     if (!isPopupOpen) {
       setIsSaving(false);
@@ -27,7 +31,7 @@ function PopupWithForm({
   return (
     <div
       className={`popup popup_type_${name} ${isPopupOpen ? 'popup_opened' : ''}`}
-      onClick={onClose}
+      onClick={handleWindowCloseClick}
     >
       <div className="popup__container">
         <h2 className="popup__title">{title}</h2>

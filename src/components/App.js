@@ -21,25 +21,21 @@ import InfoTooltip from './InfoTooltip';
 import * as auth from '../utils/auth';
 
 function App() {
+  const navigate = useNavigate();
+
   //popup
   const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
   const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState([]);
   const [isZoomPopupOpen, setIsZoomPopupOpen] = useState(false);
-  // const [isQuestionPopupOpen, setIsQuestionPopupOpen] = useState(false);
+  const [isInfoTooltipSuccess, setIsInfoTooltipSuccess] = useState(false);
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   //context
   const [currentUser, setCurrentUser] = useState({});
   //cards
   const [cards, setCards] = useState([]);
-
-  const navigate = useNavigate();
-
-  // попап успешного входа
-  const [isInfoTooltipSuccess, setIsInfoTooltipSuccess] = useState(false);
-  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
-
-  // check
+  // check isLoggedIn
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   //user email
   const [email, setEmail] = useState('');
@@ -59,7 +55,6 @@ function App() {
       });
   }
 
-  // Использование внутри компонента или обработчика события
   useEffect(() => {
     handleToken();
   }, []);
@@ -99,6 +94,7 @@ function App() {
         handleInfoTooltip(false);
       });
   }
+
   //logout
   function handleLogOut() {
     setIsLoggedIn(false);
@@ -124,10 +120,7 @@ function App() {
     setSelectedCard(card);
     setIsZoomPopupOpen(true);
   }
-  // // Open Question Popup
-  // function handleQuestionPopupOpen() {
-  //   setIsQuestionPopupOpen(true);
-  // }
+
   // Open Info Popup
   function handleInfoTooltip(isSuccess) {
     setIsInfoTooltipOpen(true);
@@ -140,19 +133,9 @@ function App() {
     setIsEditAvatarPopupOpen(false);
     setIsAddPlacePopupOpen(false);
     setIsZoomPopupOpen(false);
-    // setIsQuestionPopupOpen(false);
     setIsInfoTooltipOpen(false);
     setIsInfoTooltipSuccess(false);
   }, []);
-  // Close popups when clicking outside the popup
-  const handleWindowCloseClick = useCallback(
-    evt => {
-      if (evt.target === evt.currentTarget) {
-        closeAllPopups();
-      }
-    },
-    [closeAllPopups]
-  );
 
   // Update user information
   function handleUpdateUser(userInfo) {
@@ -219,11 +202,6 @@ function App() {
     }
   }
 
-  // //delete card
-  // function handleCardDelete() {
-  //   handleQuestionPopupOpen();
-  // }
-
   function handleConfirmDelete(card) {
     api
       .removeCard(card._id)
@@ -265,7 +243,6 @@ function App() {
               cards={cards}
               onCardLike={handleCardLike}
               onCardDelete={handleConfirmDelete}
-              // onQuestuon={handleCardDelete}
             />
           }
         />
@@ -282,35 +259,31 @@ function App() {
       <Popup onClose={closeAllPopups}>
         <EditProfilePopup
           isPopupOpen={isEditProfilePopupOpen}
-          onClose={handleWindowCloseClick}
+          onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
         />
 
         <EditAvatarPopup
           isPopupOpen={isEditAvatarPopupOpen}
-          onClose={handleWindowCloseClick}
+          onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
         />
 
         <AddPlacePopup
           isPopupOpen={isAddPlacePopupOpen}
-          onClose={handleWindowCloseClick}
+          onClose={closeAllPopups}
           onAddPlace={handleAddPlace}
         />
         <PopupWithForm
           name="question-popup"
           title="Вы уверены"
           button="Да"
-          onClose={handleWindowCloseClick}
+          onClose={closeAllPopups}
         />
 
-        <ImagePopup
-          card={selectedCard}
-          isPopupOpen={isZoomPopupOpen}
-          onClose={handleWindowCloseClick}
-        />
+        <ImagePopup card={selectedCard} isPopupOpen={isZoomPopupOpen} onClose={closeAllPopups} />
         <InfoTooltip
-          onClose={handleWindowCloseClick}
+          onClose={closeAllPopups}
           isPopupOpen={isInfoTooltipOpen}
           text={
             isInfoTooltipSuccess

@@ -1,4 +1,10 @@
 function ImagePopup({ card, onClose, isPopupOpen }) {
+  const handleWindowCloseClick = evt => {
+    if (evt.target === evt.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
     <div className={`popup  ${isPopupOpen ? 'popup_opened' : ''}`} onClick={onClose}>
       <div className="popup__zoom-container">
@@ -8,7 +14,7 @@ function ImagePopup({ card, onClose, isPopupOpen }) {
           type="button"
           aria-label="Закрыть"
           className="popup__close-icon popup__close-zoom"
-          onClick={onClose}
+          onClick={handleWindowCloseClick}
         />
       </div>
     </div>
