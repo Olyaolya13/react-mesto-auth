@@ -1,0 +1,4 @@
+.header__menu-open {
+  display: flex !important;
+  flex-direction: column;
+}

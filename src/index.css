@@ -4,6 +4,15 @@
 /*header*/
 @import url(./blocks/header/header.css);
 @import url(./blocks/header/__logo/header__logo.css);
+@import url(./blocks/header/__burger/header__burger.css);
+@import url(./blocks/header/__logo-bottom/header__logo-bottom.css);
+@import url(./blocks/header/__logo-hidden/header__logo-hidden.css);
+@import url(./blocks/header/__menu-input/header__menu-input.css);
+@import url(./blocks/header/__menu-open/header__menu-open.css);
+@import url(./blocks/header/__menu/header__menu.css);
+@import url(./blocks/header/__menu__box/header__menu__box.css);
+@import url(./blocks/header/__menu__btn/header__menu__btn.css);
+
 /*content*/
 @import url(./blocks/content/content.css);
 @import url(./blocks/content/__button-add/content__button-add.css);
@@ -66,3 +75,5 @@
 @import url(./blocks/register/__login-link/register__login-link.css);
 @import url(./blocks/register/__user/register__user.css);
 @import url(./blocks/register/__click/register__click.css);
+@import url(./blocks/register/__subtitle-burger/register__subtitle-burger.css);
+@import url(./blocks/register/__main/register__main.css);

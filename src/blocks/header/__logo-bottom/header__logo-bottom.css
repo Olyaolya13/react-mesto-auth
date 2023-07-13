@@ -1,0 +1,5 @@
+.header__logo-bottom {
+  display: flex;
+  border-top: 0.5px solid rgba(84, 84, 84, 0.7);
+  width: 94vw;
+}

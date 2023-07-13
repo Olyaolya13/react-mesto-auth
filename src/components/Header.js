@@ -38,10 +38,10 @@ function Header({ email, onLogout }) {
   }, [isMenuOpen, email]);
 
   return (
-    <header className={`header ${isMenuOpen ? 'header--menu-open' : ''}`}>
+    <header className={`header ${isMenuOpen ? 'header__menu-open' : ''}`}>
       {isLogoVisible && (
         <img
-          className={`header__logo ${isMenuOpen ? 'header__logo_hidden' : ''}
+          className={`header__logo ${isMenuOpen ? 'header__logo-hidden' : ''}
           } `}
           alt="логотип Место"
           src={logo}
@@ -49,9 +49,9 @@ function Header({ email, onLogout }) {
       )}
 
       {email ? (
-        <div className="header__hamburger header__hamburger-flex header__hamburger-menu">
+        <div className="header__burger header__burger-flex header__burger-menu">
           <input
-            className="header__menu__input header__menu__toggle"
+            className="header__menu-input header__menu__toggle"
             id="header__menu__toggle"
             type="checkbox"
             checked={isMenuOpen}
@@ -83,7 +83,7 @@ function Header({ email, onLogout }) {
         </div>
       )}
       {isMenuOpen && !isLogoVisible && (
-        <div className="header__flex header__logo_bottom">
+        <div className="header__flex header__logo-bottom">
           <img className="header__logo" alt="логотип Место" src={logo} />
         </div>
       )}
