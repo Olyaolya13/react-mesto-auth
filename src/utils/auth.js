@@ -32,18 +32,14 @@ export const login = (password, email) => {
   });
 };
 
-export const getContent = () => {
+export const checkToken = () => {
   return fetch(`${BASE_URL}users/me`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${localStorage.getItem('token')}`
     }
-  })
-    .then(res => {
-      return checkResponseServer(res);
-    })
-    .then(data => {
-      return data;
-    });
+  }).then(res => {
+    return checkResponseServer(res);
+  });
 };

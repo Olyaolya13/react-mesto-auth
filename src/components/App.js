@@ -44,7 +44,7 @@ function App() {
   function handleToken(setEmail, setIsLoggedIn, navigate) {
     const token = localStorage.getItem('token');
     return auth
-      .getContent(token)
+      .checkToken(token)
       .then(res => {
         if (token) {
           setEmail(res.email);
