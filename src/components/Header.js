@@ -14,7 +14,8 @@ function Header({ email, onLogout }) {
   };
 
   const handleLogout = () => {
-    setIsLogoVisible(false);
+    setIsLogoVisible(true);
+    setIsMenuOpen(false);
     onLogout();
   };
 
