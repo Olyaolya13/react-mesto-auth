@@ -18,7 +18,6 @@ function Card({ card, onCardClick, onCardLike, onCardDelete, onQuestuon }) {
     <article className="card">
       <div
         style={{ backgroundImage: `url(${card.link})` }}
-        alt={`${card.name}`}
         className="card__image"
         onClick={() => onCardClick({ link: card.link, name: card.name })}
       />
