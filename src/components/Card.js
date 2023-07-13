@@ -14,12 +14,16 @@ function Card({ card, onCardClick, onCardLike, onCardDelete, onQuestuon }) {
     onCardDelete(card);
   };
 
+  const handleCardClick = () => {
+    onCardClick({ link: card.link, name: card.name });
+  };
+
   return (
     <article className="card">
       <div
         style={{ backgroundImage: `url(${card.link})` }}
         className="card__image"
-        onClick={() => onCardClick({ link: card.link, name: card.name })}
+        onClick={handleCardClick}
       />
       <div className="card__text">
         <h2 className="card__title">{`${card.name}`}</h2>
