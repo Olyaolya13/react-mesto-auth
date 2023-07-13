@@ -8,7 +8,7 @@ function EditProfilePopup({ isPopupOpen, onClose, onUpdateUser }) {
   const [description, setDescription] = useState('');
   const currentUser = useContext(CurrentUserContext);
 
-  const { error, isValid, input, handleChange, resetValidation } = useFormValidation();
+  const { error, isValid, isInputValid, handleChange, resetValidation } = useFormValidation();
 
   const handleSubmit = evt => {
     evt.preventDefault();
@@ -41,7 +41,7 @@ function EditProfilePopup({ isPopupOpen, onClose, onUpdateUser }) {
         placeholder="ФИО"
         name="name"
         className={`popup__input popup__input_type_name ${
-          input.name === undefined || input.name ? '' : 'popup__input-error_type_'
+          isInputValid.name === undefined || isInputValid.name ? '' : 'popup__input-error_type_'
         }`}
         id="user-name"
         minLength={2}
@@ -61,7 +61,7 @@ function EditProfilePopup({ isPopupOpen, onClose, onUpdateUser }) {
         placeholder="Должность"
         name="about"
         className={`popup__input popup__input_type_occupation ${
-          input.about === undefined || input.about ? '' : 'popup__input-error_type_'
+          isInputValid.about === undefined || isInputValid.about ? '' : 'popup__input-error_type_'
         }`}
         id="user-occupation"
         minLength={2}

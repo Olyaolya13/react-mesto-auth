@@ -4,7 +4,7 @@ const useFormValidation = () => {
   const [value, setValue] = useState({});
   const [error, setError] = useState({});
   const [isValid, setIsValid] = useState(false);
-  const [input, setInput] = useState({});
+  const [isInputValid, setIsInputValid] = useState({});
 
   const handleChange = evt => {
     const { name, value, validationMessage, form, valid: isValid } = evt.target;
@@ -15,7 +15,7 @@ const useFormValidation = () => {
     setError(err => {
       return { ...err, [name]: validationMessage };
     });
-    setInput(obj => {
+    setIsInputValid(obj => {
       return { ...obj, [name]: isValid };
     });
     setIsValid(form.checkValidity());
@@ -25,14 +25,14 @@ const useFormValidation = () => {
     setValue({});
     setError({});
     setIsValid(false);
-    setInput({});
+    setIsInputValid({});
   }, []);
 
   return {
     value,
     error,
     isValid,
-    input,
+    isInputValid,
     handleChange,
     resetValidation
   };

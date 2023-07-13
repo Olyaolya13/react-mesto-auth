@@ -6,7 +6,7 @@ function AddPlacePopup({ isPopupOpen, onClose, onAddPlace }) {
   const [name, setName] = useState('');
   const [link, setLink] = useState('');
 
-  const { error, isValid, input, handleChange, resetValidation } = useFormValidation();
+  const { error, isValid, isInputValid, handleChange, resetValidation } = useFormValidation();
 
   const handleSubmit = evt => {
     evt.preventDefault();
@@ -39,7 +39,7 @@ function AddPlacePopup({ isPopupOpen, onClose, onAddPlace }) {
         placeholder="Название"
         name="name"
         className={`popup__input popup__input_type_card ${
-          input.name === undefined || input.name ? '' : 'popup__input-error_type_'
+          isInputValid.name === undefined || isInputValid.name ? '' : 'popup__input-error_type_'
         }`}
         id="card-name"
         minLength={2}
@@ -59,7 +59,7 @@ function AddPlacePopup({ isPopupOpen, onClose, onAddPlace }) {
         placeholder="Ссылка на картинку"
         name="link"
         className={`popup__input popup__input_type_link ${
-          input.link === undefined || input.link ? '' : 'popup__input-error_type_'
+          isInputValid.link === undefined || isInputValid.link ? '' : 'popup__input-error_type_'
         }`}
         id="card-link"
         value={link || ''}

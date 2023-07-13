@@ -5,7 +5,7 @@ import useFormValidation from '../hooks/useFormValidation';
 function EditAvatarPopup({ isPopupOpen, onClose, onUpdateAvatar }) {
   const avatarRef = useRef();
 
-  const { error, isValid, input, handleChange, resetValidation } = useFormValidation();
+  const { error, isValid, isInputValid, handleChange, resetValidation } = useFormValidation();
 
   const handleSubmit = evt => {
     evt.preventDefault();
@@ -34,7 +34,7 @@ function EditAvatarPopup({ isPopupOpen, onClose, onUpdateAvatar }) {
         placeholder="Ссылка на аватар"
         name="avatar"
         className={`popup__input popup__input_type_avatar ${
-          input.avatar === undefined || input.avatar ? '' : 'popup__input-error_type_'
+          isInputValid.avatar === undefined || isInputValid.avatar ? '' : 'popup__input-error_type_'
         }`}
         id="user-avatar"
         ref={avatarRef}
