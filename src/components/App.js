@@ -39,14 +39,25 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   //user email
   const [email, setEmail] = useState('');
+  //burger
+  const [isBurgerOpen, setIsBurgerOpen] = useState(false);
+
+  const handleBurgerToggle = () => {
+    setIsBurgerOpen(!isBurgerOpen);
+  };
+
+  const handleBurgerClose = () => {
+    setIsBurgerOpen(false);
+  };
   //token
-  function handleToken() {
+
+  function handleToken(setEmail, setIsLoggedIn, navigate) {
     const token = localStorage.getItem('token');
     if (token) {
-      return auth
+      auth
         .checkToken(token)
         .then(res => {
-          setEmail(res.email);
+          setEmail(res.data.email);
           setIsLoggedIn(true);
           navigate('/', { replace: true });
         })
@@ -54,12 +65,11 @@ function App() {
           console.log(error);
         });
     }
-    return Promise.resolve();
   }
 
   useEffect(() => {
-    handleToken();
-  }, []);
+    handleToken(setEmail, setIsLoggedIn, navigate);
+  }, [navigate]);
 
   function handleOnRegister({ password, email }) {
     return auth
@@ -230,7 +240,8 @@ function App() {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <Header email={email} isLoggedIn={isLoggedIn} onLogout={handleLogOut} />
+      <Header name="main" email={email} isLoggedIn={isLoggedIn} onLogout={handleLogOut} />
+
       <Routes>
         <Route
           path="/"
