@@ -39,17 +39,10 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   //user email
   const [email, setEmail] = useState('');
-  //burger
-  const [isBurgerOpen, setIsBurgerOpen] = useState(false);
-
-  const handleBurgerToggle = () => {
-    setIsBurgerOpen(!isBurgerOpen);
-  };
-
-  const handleBurgerClose = () => {
-    setIsBurgerOpen(false);
-  };
-  //token
+  //button text
+  const [isEditProfilePopupSave, setIsEditProfilePopupSave] = useState(false);
+  const [isAddPlacePopupSave, setIsAddPlacePopupSave] = useState(false);
+  const [isEditAvatarPopupSave, setIsEditAvatarPopupSave] = useState(false);
 
   function handleToken(setEmail, setIsLoggedIn, navigate) {
     const token = localStorage.getItem('token');
@@ -151,6 +144,7 @@ function App() {
 
   // Update user information
   function handleUpdateUser(userInfo) {
+    setIsEditProfilePopupSave(true);
     api
       .editProfile(userInfo)
       .then(data => {
@@ -159,11 +153,13 @@ function App() {
       })
       .catch(err => {
         console.log(err);
-      });
+      })
+      .finally(() => setIsEditProfilePopupSave(false));
   }
 
   // Update user avatar
   function handleUpdateAvatar(avatar) {
+    setIsEditAvatarPopupSave(true);
     api
       .editAvatar(avatar)
       .then(data => {
@@ -172,10 +168,12 @@ function App() {
       })
       .catch(err => {
         console.log(err);
-      });
+      })
+      .finally(() => setIsEditAvatarPopupSave(false));
   }
   //add card
   function handleAddPlace(newCard) {
+    setIsAddPlacePopupSave(true);
     api
       .addNewCard(newCard)
       .then(card => {
@@ -184,7 +182,8 @@ function App() {
       })
       .catch(err => {
         console.log(err);
-      });
+      })
+      .finally(() => setIsAddPlacePopupSave(false));
   }
 
   // Handle like on a card
@@ -274,27 +273,25 @@ function App() {
           isPopupOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
           onUpdateUser={handleUpdateUser}
+          isSaving={isEditProfilePopupSave}
         />
 
         <EditAvatarPopup
           isPopupOpen={isEditAvatarPopupOpen}
           onClose={closeAllPopups}
           onUpdateAvatar={handleUpdateAvatar}
+          isSaving={isEditAvatarPopupSave}
         />
 
         <AddPlacePopup
           isPopupOpen={isAddPlacePopupOpen}
           onClose={closeAllPopups}
           onAddPlace={handleAddPlace}
-        />
-        <PopupWithForm
-          name="question-popup"
-          title="Вы уверены"
-          button="Да"
-          onClose={closeAllPopups}
+          isSaving={isAddPlacePopupSave}
         />
 
         <ImagePopup card={selectedCard} isPopupOpen={isZoomPopupOpen} onClose={closeAllPopups} />
+
         <InfoTooltip
           onClose={closeAllPopups}
           isPopupOpen={isInfoTooltipOpen}

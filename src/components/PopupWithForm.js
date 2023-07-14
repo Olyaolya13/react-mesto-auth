@@ -1,20 +1,15 @@
-import { useEffect, useState } from 'react';
-
 function PopupWithForm({
   name,
   title,
-  button,
   children,
   isPopupOpen,
   onClose,
   onSubmit,
+  buttonText,
   isValid = true
 }) {
-  const [isSaving, setIsSaving] = useState(false);
-
   const handleFormSubmit = evt => {
     evt.preventDefault();
-    setIsSaving(true);
     onSubmit(evt);
   };
   const handleWindowCloseClick = evt => {
@@ -22,11 +17,6 @@ function PopupWithForm({
       onClose();
     }
   };
-  useEffect(() => {
-    if (!isPopupOpen) {
-      setIsSaving(false);
-    }
-  }, [isPopupOpen]);
 
   return (
     <div
@@ -40,10 +30,10 @@ function PopupWithForm({
           <button
             type="submit"
             aria-label="Сохранить"
-            className={`popup__button ${!isValid || isSaving ? 'popup__button_disabled' : ''}`}
-            disabled={!isValid || isSaving}
+            className={`popup__button ${!isValid ? 'popup__button_disabled' : ''}`}
+            disabled={!isValid}
           >
-            {isSaving ? 'Сохранение...' : button}
+            {buttonText}
           </button>
         </form>
         <button
