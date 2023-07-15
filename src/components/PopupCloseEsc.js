@@ -15,7 +15,7 @@ function PopupCloseEsc({ children, onClose, isPopupOpen }) {
         document.removeEventListener('keydown', handleEscKey);
       };
     }
-  }, [isPopupOpen]);
+  }, [isPopupOpen]); //почему то не сохранился в гитхабе
 
   return <div>{children}</div>;
 }
