@@ -16,7 +16,7 @@ function EditProfilePopup({ isPopupOpen, onClose, onUpdateUser, isSaving }) {
 
   useEffect(() => {
     if (!isPopupOpen) {
-      resetValidation();
+      resetValidation({ name: currentUser.name, about: currentUser.about });
     }
   }, [isPopupOpen, currentUser, resetValidation]);
 
