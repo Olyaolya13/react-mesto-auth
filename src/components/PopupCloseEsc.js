@@ -15,7 +15,7 @@ function PopupCloseEsc({ children, onClose, isPopupOpen }) {
         document.removeEventListener('keydown', handleEscKey);
       };
     }
-  }, [isPopupOpen, onClose]);
+  }, [isPopupOpen]);
 
   return <div>{children}</div>;
 }
