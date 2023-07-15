@@ -6,7 +6,7 @@ function PopupWithForm({
   onClose,
   onSubmit,
   buttonText,
-  isValid = true
+  isValid
 }) {
   const handleFormSubmit = evt => {
     evt.preventDefault();

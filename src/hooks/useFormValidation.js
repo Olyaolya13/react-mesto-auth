@@ -9,20 +9,23 @@ const useFormValidation = () => {
   const handleChange = evt => {
     const { name, value, validationMessage, form, valid: isValid } = evt.target;
 
-    setValue(obj => {
-      return { ...obj, [name]: value };
-    });
-    setError(err => {
-      return { ...err, [name]: validationMessage };
-    });
-    setIsInputValid(obj => {
-      return { ...obj, [name]: isValid };
-    });
+    setValue(obj => ({
+      ...obj,
+      [name]: value
+    }));
+    setError(err => ({
+      ...err,
+      [name]: validationMessage
+    }));
+    setIsInputValid(obj => ({
+      ...obj,
+      [name]: isValid
+    }));
     setIsValid(form.checkValidity());
   };
 
-  const resetValidation = useCallback(() => {
-    setValue({});
+  const resetValidation = useCallback(initialValues => {
+    setValue(initialValues || {});
     setError({});
     setIsValid(false);
     setIsInputValid({});
