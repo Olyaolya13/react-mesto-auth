@@ -267,7 +267,16 @@ function App() {
       </Routes>
       {isLoggedIn && <Footer />}
 
-      <Popup onClose={closeAllPopups}>
+      <Popup
+        onClose={closeAllPopups}
+        isPopupOpen={
+          isEditProfilePopupOpen ||
+          isEditAvatarPopupOpen ||
+          isAddPlacePopupOpen ||
+          isZoomPopupOpen ||
+          isInfoTooltipOpen
+        }
+      >
         <EditProfilePopup
           isPopupOpen={isEditProfilePopupOpen}
           onClose={closeAllPopups}
