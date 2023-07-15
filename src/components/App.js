@@ -1,9 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import api from '../utils/api';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
-import PopupWithForm from './PopupWithForm';
 import ImagePopup from './ImagePopup';
 import CurrentUserContext from '../contexts/CurrentUserContext';
 import EditProfilePopup from './EditProfilePopup';
@@ -44,25 +43,25 @@ function App() {
   const [isAddPlacePopupSave, setIsAddPlacePopupSave] = useState(false);
   const [isEditAvatarPopupSave, setIsEditAvatarPopupSave] = useState(false);
 
-  function handleToken(setEmail, setIsLoggedIn, navigate) {
-    const token = localStorage.getItem('token');
-    if (token) {
-      auth
-        .checkToken(token)
-        .then(res => {
-          setEmail(res.data.email);
-          setIsLoggedIn(true);
-          navigate('/', { replace: true });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
+  function handleToken(token) {
+    auth
+      .checkToken(token)
+      .then(res => {
+        setEmail(res.data.email);
+        setIsLoggedIn(true);
+        navigate('/', { replace: true });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   useEffect(() => {
-    handleToken(setEmail, setIsLoggedIn, navigate);
-  }, [navigate]);
+    const token = localStorage.getItem('token');
+    if (token) {
+      handleToken(token);
+    }
+  }, []);
 
   function handleOnRegister({ password, email }) {
     return auth
