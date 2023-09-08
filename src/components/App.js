@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useContext } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import api from '../utils/api';
 import Header from './Header';
 import Main from './Main';
@@ -44,10 +44,11 @@ function App() {
   const [isEditAvatarPopupSave, setIsEditAvatarPopupSave] = useState(false);
 
   function handleToken(token) {
+    
     auth
       .checkToken(token)
       .then(res => {
-        setEmail(res.data.email);
+        setEmail(res.email);
         setIsLoggedIn(true);
         navigate('/', { replace: true });
       })
@@ -143,9 +144,10 @@ function App() {
 
   // Update user information
   function handleUpdateUser(userInfo) {
+    const token = localStorage.getItem('token');
     setIsEditProfilePopupSave(true);
     api
-      .editProfile(userInfo)
+      .editProfile(userInfo,token)
       .then(data => {
         setCurrentUser(data);
         closeAllPopups();
@@ -158,9 +160,10 @@ function App() {
 
   // Update user avatar
   function handleUpdateAvatar(avatar) {
+    const token = localStorage.getItem('token');
     setIsEditAvatarPopupSave(true);
     api
-      .editAvatar(avatar)
+      .editAvatar(avatar,token)
       .then(data => {
         setCurrentUser(data);
         closeAllPopups();
@@ -172,9 +175,10 @@ function App() {
   }
   //add card
   function handleAddPlace(newCard) {
+    const token = localStorage.getItem('token');
     setIsAddPlacePopupSave(true);
     api
-      .addNewCard(newCard)
+      .addNewCard(newCard,token)
       .then(card => {
         setCards(state => [card, ...state]);
         closeAllPopups();
@@ -188,11 +192,11 @@ function App() {
   // Handle like on a card
   function handleCardLike(card) {
     const isLiked = card.likes.some(i => i._id === currentUser._id);
-
+    const token = localStorage.getItem('token');
     {
       if (!isLiked) {
         api
-          .addNewLike(card._id)
+          .addNewLike(card._id,token)
           .then(newCard => {
             setCards(state => state.map(c => (c._id === card._id ? newCard : c)));
           })
@@ -201,7 +205,7 @@ function App() {
           });
       } else {
         api
-          .removeLike(card._id)
+          .removeLike(card._id,token)
           .then(newCard => {
             setCards(state => state.map(c => (c._id === card._id ? newCard : c)));
           })
@@ -213,8 +217,9 @@ function App() {
   }
 
   function handleConfirmDelete(card) {
+    const token = localStorage.getItem('token');
     api
-      .removeCard(card._id)
+      .removeCard(card._id,token)
       .then(() => {
         setCards(state => state.filter(c => c._id !== card._id));
       })
@@ -225,7 +230,8 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn) {
-      Promise.all([api.getUserInfo(), api.getInitialCards()])
+      const token = localStorage.getItem('token');
+      Promise.all([api.getUserInfo(token), api.getInitialCards(token)])
         .then(([userInfo, initialCards]) => {
           setCurrentUser(userInfo);
           setCards(initialCards);

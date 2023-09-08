@@ -47,7 +47,8 @@ function Main({
         />
       </section>
       <section className="cards">
-        {cards.map(card => (
+      {console.log(cards)}
+        {cards.map(card =>  (
           <Card
             key={card._id}
             card={card}

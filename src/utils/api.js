@@ -1,7 +1,8 @@
+
 class Api {
-  constructor({ baseUrl, headers }) {
+  constructor({ baseUrl}) {
     this._baseUrl = baseUrl;
-    this._headers = headers;
+
   }
 
   //проверка на подключение сервера
@@ -20,18 +21,21 @@ class Api {
   }
 
   //Загрузка информации о пользователе с сервера
-  getUserInfo() {
+  getUserInfo(token) {
     return this._request(`${this._baseUrl}/users/me`, {
       method: 'GET',
-      headers: this._headers
+      headers: {
+        'Authorization': `Bearer ${token}`}
     });
   }
 
   //аватар
-  editAvatar(user) {
+  editAvatar(user,token) {
     return this._request(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
-      headers: this._headers,
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'},
       body: JSON.stringify({
         avatar: user.avatar
       })
@@ -39,11 +43,12 @@ class Api {
   }
 
   //обновление данных пользователя
-  editProfile(user) {
+  editProfile(user,token) {
     return this._request(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
-      headers: this._headers,
-      'Content-Type': 'application/json',
+      headers: 
+      {'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'},
       body: JSON.stringify({
         name: user.name,
         about: user.about
@@ -51,19 +56,21 @@ class Api {
     });
   }
   //Загрузка карточек с сервера
-  getInitialCards() {
+  getInitialCards(token) {
     return this._request(`${this._baseUrl}/cards`, {
       method: 'GET',
-      headers: this._headers
+      headers: {
+        'Authorization': `Bearer ${token}`}
     });
   }
 
   //добавление новой карточки
-  addNewCard(element) {
+  addNewCard(element,token) {
     return this._request(`${this._baseUrl}/cards`, {
       method: 'POST',
-      headers: this._headers,
-      'Content-Type': 'application/json',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'},
       body: JSON.stringify({
         name: element.name,
         link: element.link
@@ -72,38 +79,44 @@ class Api {
   }
 
   //удаление карточки
-  removeCard(cardId) {
+  removeCard(cardId,token) {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
-      headers: this._headers
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     });
   }
 
   //добавление лайка
-  addNewLike(cardId) {
+  addNewLike(cardId,token) {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'PUT',
-      headers: this._headers
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
     });
   }
 
   //удаление лайка
-  removeLike(cardId) {
+  removeLike(cardId, token) {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: 'DELETE',
-      headers: this._headers,
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
       'Content-Type': 'application/json'
     });
   }
 }
 
-//Api
-const api = new Api({
-  baseUrl: 'https://nomoreparties.co/v1/cohort-66',
-  headers: {
-    authorization: 'aee4e6c3-43e3-4bda-884a-a8c8895923c3',
-    'Content-Type': 'application/json'
-  }
-});
 
+const api = new Api({
+  baseUrl: 'http://localhost:3000',
+  // headers: {
+  //       'Authorization': `Bearer ${localStorage.getItem('token')}`,
+  //       'Content-Type': 'application/json'
+  //     }
+})
 export default api;
+
